@@ -49,7 +49,6 @@ async function convertPdfToHtml(pdfPath: string, outputHtmlPath: string): Promis
 
     await page.render({ canvasContext: context as any, viewport }).promise;
 
-
     textContent.items.forEach((textItem: any) => {
       let text = textItem.str;
 
@@ -73,9 +72,5 @@ async function convertPdfToHtml(pdfPath: string, outputHtmlPath: string): Promis
   console.log(pageHtml)
   return pageHtml;
 }
-
-const pdfFilePath = join(__dirname, "sample.pdf");
-const outputHtmlFilePath = join(__dirname, "output.html");
-convertPdfToHtml(pdfFilePath, outputHtmlFilePath);
 
 export default convertPdfToHtml;

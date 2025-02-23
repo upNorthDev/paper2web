@@ -1,0 +1,50 @@
+# paper2web [WIP]
+
+A simple Node.js package for converting PDF documents into structured HTML without losing formatting.
+
+## Features
+
+- Extracts text content from PDFs.
+- Preserves basic text formatting (bold, italic).
+- Converts each page into structured HTML.
+
+## Installation
+
+Install via npm:
+
+```sh
+npm install paper2web
+```
+
+# Usage
+
+```js
+import { convertPdfToHtml } from "paper2web";
+
+const pdfPath = "path/to/input.pdf";
+const outputHtmlPath = "path/to/output.html";
+
+convertPdfToHtml(pdfPath, outputHtmlPath)
+  .then(() => console.log("Conversion successful!"))
+  .catch((error) => console.error("Error:", error))
+```
+
+# License
+
+This project is licensed under the MIT License
+
+# Contributing
+
+Contributions are welcome! Feel free to open an issue or submit a pull request!
+
+# Future of this package
+
+- Add support for images
+- Add support for tables
+- Add cli support
+
+# Author
+Developed by Malte Harms
+```vbnet
+Let me know if you need any changes! 🚀
+```

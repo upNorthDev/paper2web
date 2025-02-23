@@ -35,9 +35,8 @@ This project uses [PDF.js](https://mozilla.github.io/pdf.js/) (`pdfjs-dist`) by 
 import { convertPdfToHtml } from "paper2web";
 
 const pdfPath = "path/to/input.pdf";
-const outputHtmlPath = "path/to/output.html";
 
-convertPdfToHtml(pdfPath, outputHtmlPath)
+convertPdfToHtml(pdfPath)
   .then(() => console.log("Conversion successful!"))
   .catch((error) => console.error("Error:", error))
 ```

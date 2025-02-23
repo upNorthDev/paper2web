@@ -8,13 +8,26 @@ A simple Node.js package for converting PDF documents into structured HTML witho
 - Preserves basic text formatting (bold, italic).
 - Converts each page into structured HTML.
 
-## Installation
+# Installation
 
 Install via npm:
 
 ```sh
 npm install paper2web
 ```
+
+## Dependencies
+
+This package relies on the following libraries:
+
+- [`pdfjs-dist`](https://github.com/mozilla/pdf.js)
+- [`canvas`](https://github.com/Automattic/node-canvas) – For usage of `pdfjs-dist`
+- [`jsdom`](https://github.com/jsdom/jsdom) – To simulate a browser-like environment for `pdfjs-dist`.
+
+## Acknowledgments
+
+This project uses [PDF.js](https://mozilla.github.io/pdf.js/) (`pdfjs-dist`) by Mozilla to extract data from PDF files for further processing.
+
 
 # Usage
 

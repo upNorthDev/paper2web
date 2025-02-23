@@ -1,0 +1,30 @@
+{
+  "name": "paper2web",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "files": [
+    "src/",
+    "dist/",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "npx tsc"
+  },
+  "keywords": [],
+  "author": "Malte Harms",
+  "license": "MIT",
+  "description": "",
+  "devDependencies": {
+    "@types/jsdom": "^21.1.7",
+    "@types/node": "^22.13.5",
+    "@types/pdfjs-dist": "^2.10.378",
+    "typescript": "^5.7.3"
+  },
+  "dependencies": {
+    "canvas": "^3.1.0",
+    "jsdom": "^26.0.0",
+    "pdfjs-dist": "^4.10.38"
+  }
+}

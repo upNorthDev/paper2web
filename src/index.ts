@@ -32,7 +32,7 @@ function isBold(fontName: string): boolean {
   return fontName.includes('f1') || fontName.includes('Bold');
 }
 
-async function convertPdfToHtml(pdfPath: string): Promise<string> {
+export async function convertPdfToHtml(pdfPath: string): Promise<string> {
   const data = new Uint8Array(readFileSync(pdfPath));
   const pdfDoc: PDFDocumentProxy = await getDocument({ data }).promise;
 
@@ -72,5 +72,3 @@ async function convertPdfToHtml(pdfPath: string): Promise<string> {
   console.log(pageHtml)
   return pageHtml;
 }
-
-export default convertPdfToHtml;

@@ -23,6 +23,7 @@ This package relies on the following libraries:
 - [`pdfjs-dist`](https://github.com/mozilla/pdf.js)
 - [`canvas`](https://github.com/Automattic/node-canvas) – For usage of `pdfjs-dist`
 - [`jsdom`](https://github.com/jsdom/jsdom) – To simulate a browser-like environment for `pdfjs-dist`.
+- [`nodejs`](https://nodejs.org/en) >= 22.14.0
 
 ## Acknowledgments
 

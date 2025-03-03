@@ -81,6 +81,3 @@ export async function convertToHtml(pdfPath: string): Promise<string> {
     pdfParser.loadPDF(pdfPath);
   });
 }
-
-const html = await convertToHtml("sample.pdf");
-console.log(html);

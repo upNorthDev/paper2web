@@ -6,6 +6,7 @@ A simple Node.js package for converting PDF documents into structured HTML witho
 
 - Extracts text content from PDFs.
 - Preserves basic text formatting (bold, italic).
+- Extract unordered lists to a HTML list
 - Converts each page into structured HTML.
 
 # Installation
@@ -20,14 +21,12 @@ npm install paper2web
 
 This package relies on the following libraries:
 
-- [`pdfjs-dist`](https://github.com/mozilla/pdf.js)
-- [`canvas`](https://github.com/Automattic/node-canvas) – For usage of `pdfjs-dist`
-- [`jsdom`](https://github.com/jsdom/jsdom) – To simulate a browser-like environment for `pdfjs-dist`.
+- [`pdf2json`](https://github.com/modesty/pdf2json)
 - [`nodejs`](https://nodejs.org/en) >= 22.14.0
 
 ## Acknowledgments
 
-This project uses [PDF.js](https://mozilla.github.io/pdf.js/) (`pdfjs-dist`) by Mozilla to extract data from PDF files for further processing.
+This project uses [pdf2json]([https://mozilla.github.io/pdf.js/](https://github.com/modesty/pdf2json)) (`pdf2json`) by modesty to extract data from PDF files for further processing.
 
 
 # Usage
@@ -53,7 +52,6 @@ Contributions are welcome! Feel free to open an issue or submit a pull request!
 # Future of this package
 
 - Add support for images
-- Add support for tables
 - Add cli support
 
 # Author

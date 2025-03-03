@@ -1,74 +1,86 @@
-import { readFileSync, writeFileSync } from "fs";
-import { getDocument, PDFPageProxy, PageViewport, PDFDocumentProxy } from "pdfjs-dist/legacy/build/pdf.mjs";
-import { createCanvas, ImageData as CanvasImageData, Image } from "canvas";
-import { dirname, join } from "path";
 import { fileURLToPath } from "url";
-import { JSDOM } from "jsdom";
-
-class FixedImageData extends CanvasImageData {
-  colorSpace = "srgb";
-}
-
-const dom = new JSDOM('', {
-  runScripts: "outside-only",
-  resources: "usable"
-});
-
-global.window = dom.window as any;
-global.document = dom.window.document as any;
-globalThis.ImageData = FixedImageData as unknown as typeof ImageData;
-globalThis.HTMLCanvasElement = createCanvas(1, 1).constructor as unknown as { new (): HTMLCanvasElement; prototype: HTMLCanvasElement };
-globalThis.HTMLImageElement = Image as any;
-
-global.window.requestAnimationFrame = global.window.requestAnimationFrame || ((callback: Function) => setTimeout(callback, 0));
-global.window.cancelAnimationFrame = global.window.cancelAnimationFrame || ((id: any) => clearTimeout(id));
-globalThis.requestAnimationFrame = global.window.requestAnimationFrame;
-globalThis.cancelAnimationFrame = global.window.cancelAnimationFrame;
 
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 
-function isBold(fontName: string): boolean {
-  return fontName.includes('f1') || fontName.includes('Bold');
-}
+export async function convertToHtml(pdfPath: string): Promise<string> {
+  const { default: PDFParser } = await import("pdf2json");
+  const pdfParser = new PDFParser();
 
-export async function convertPdfToHtml(pdfPath: string): Promise<string> {
-  const data = new Uint8Array(readFileSync(pdfPath));
-  const pdfDoc: PDFDocumentProxy = await getDocument({ data }).promise;
+  return new Promise((resolve, reject) => {
+    pdfParser.on("pdfParser_dataReady", (pdfData) => {
+      let html = "";
+      let fontSizes: number[] = [];
+      let lastX = 0;
+      let inUnorderedList = false;
+      let inOrderedList = false;
 
-  let htmlContent = "<html><head><meta charset='utf-8'></head><body>";
-  let pageHtml = '<div>';
+      pdfData.Pages.forEach((page: { Texts: any[] }) => {
+        page.Texts.forEach((text: { R: { T: string; TS: number[]; }[] }) => {
+          fontSizes.push(text.R[0].TS[1]);
+        });
+      });
 
-  for (let i = 1; i <= pdfDoc.numPages; i++) {
-    const page: PDFPageProxy = await pdfDoc.getPage(i);
-    const textContent: any = await page.getTextContent();
-    const viewport: PageViewport = page.getViewport({ scale: 1.5 });
+      const uniqueSizes = [...new Set(fontSizes)].sort((a, b) => b - a);
 
-    const canvas = createCanvas(viewport.width, viewport.height);
-    const context = canvas.getContext("2d") as unknown as CanvasRenderingContext2D;
+      const h1Size = uniqueSizes[0] || 24;
+      const h2Size = uniqueSizes[1] || (h1Size * 0.8);
+      const h3Size = uniqueSizes[2] || (h2Size * 0.8);
 
-    await page.render({ canvasContext: context as any, viewport }).promise;
+      pdfData.Pages.forEach((page: { Texts: any[] }) => {
+        page.Texts.forEach((text: { R: { T: string; TS: number[], x: number }[] }, index: number) => {
+          let extractedText = decodeURIComponent(text.R[0].T);
+          let fontSize = text.R[0].TS[1];
+          let isBold = text.R[0].TS[2] === 1;
+          let isItalic = text.R[0].TS[3] === 1;
+          let xPosition = text.R[0].TS[4];
 
-    textContent.items.forEach((textItem: any) => {
-      let text = textItem.str;
+          let styledText = extractedText;
 
-      if (isBold(textItem.fontName)) {
-        pageHtml += `<strong><p>${text}</p></strong>`;
-      } else if (textItem.fontName.includes("Italic")) {
-        pageHtml += `<em>${text}</em>`;
-      } else if (textItem.hasEol) {
-        pageHtml += `</br>`;
-      } else {
-        pageHtml += `<p>${text}</p>`;
-      }
+          if (fontSize >= h1Size) {
+            styledText = `<h1>${styledText}</h1>`;
+          } else if (fontSize >= h2Size) {
+            styledText = `<h2>${styledText}</h2>`;
+          } else if (fontSize >= h3Size) {
+            styledText = `<h3>${styledText}</h3>`;
+          } else {
+            if (isBold) styledText = `<b>${styledText}</b>`;
+            if (isItalic) styledText = `<i>${styledText}</i>`;
+          }
+
+          let previousText = "";
+          if (index > 0) {
+            previousText = decodeURIComponent(page.Texts[index - 1].R[0].T);
+          }
+
+          if (/^[-•●▪◦]/.test(extractedText)) {
+            if (!inUnorderedList) {
+              html += "<ul>";
+              inUnorderedList = true;
+            }
+            styledText = `<li>${styledText.substring(1).trim()}</li>`;
+          } 
+          if (!(/^[-•●▪◦]/.test(extractedText)) && (/^[-•●▪◦]/.test(previousText))) {
+            html += '</ul>';
+            inUnorderedList = false;
+          }
+
+          html += styledText + " ";
+          lastX = xPosition;
+        });
+
+        html += "<br>";
+      });
+
+      resolve(html);
     });
 
-    pageHtml += "</div>";
-    htmlContent += pageHtml;
-  }
+    pdfParser.on("pdfParser_dataError", (error) => {
+      reject(error);
+    });
 
-  htmlContent += "</body></html>";
-  
-  console.log(pageHtml)
-  return pageHtml;
+    pdfParser.loadPDF(pdfPath);
+  });
 }
+
+const html = await convertToHtml("sample.pdf");
+console.log(html);

@@ -8,6 +8,7 @@
     "declaration": true,
     "strict": true,
     "typeRoots": [".src/types", "./node_modules/@types"],
+    "skipLibCheck": true
   },
   "include": ["src", "dist/worker"]
 }

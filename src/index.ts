@@ -5,9 +5,10 @@ const __filename = fileURLToPath(import.meta.url);
 export async function convertToHtml(pdfPath: string): Promise<string> {
   const { default: PDFParser } = await import("pdf2json");
   const pdfParser = new PDFParser();
-  let html = "";
 
+  return new Promise((resolve, reject) => {
     pdfParser.on("pdfParser_dataReady", (pdfData) => {
+      let html = "";
       let fontSizes: number[] = [];
       let lastX = 0;
       let inUnorderedList = false;
@@ -69,7 +70,15 @@ export async function convertToHtml(pdfPath: string): Promise<string> {
         html += "<br>";
       });
 
+      resolve(html);
+    });
+
+    pdfParser.on("pdfParser_dataError", (error) => {
+      reject(error);
+    });
+
     pdfParser.loadPDF(pdfPath);
   });
-  return html
 }
+
+convertToHtml('sample.pdf').then(console.log).catch(console.error);

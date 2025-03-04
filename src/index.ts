@@ -70,7 +70,7 @@ export async function convertToHtml(pdfPath: string): Promise<string> {
         html += "<br>";
       });
 
-      resolve(html);
+      return resolve(html);
     });
 
     pdfParser.on("pdfParser_dataError", (error) => {

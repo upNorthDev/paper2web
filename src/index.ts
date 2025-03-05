@@ -1,7 +1,3 @@
-import { fileURLToPath } from "url";
-
-const __filename = fileURLToPath(import.meta.url);
-
 export async function convertToHtml(pdfPath: string): Promise<string> {
   const { default: PDFParser } = await import("pdf2json");
   const pdfParser = new PDFParser();
@@ -70,7 +66,7 @@ export async function convertToHtml(pdfPath: string): Promise<string> {
         html += "<br>";
       });
 
-      return resolve(html);
+      resolve(html);
     });
 
     pdfParser.on("pdfParser_dataError", (error) => {

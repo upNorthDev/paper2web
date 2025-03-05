@@ -1,6 +1,6 @@
 {
   "name": "paper2web",
-  "version": "2.0.5",
+  "version": "2.0.6",
   "main": "dist/index.js",
   "type": "module",
   "files": [
